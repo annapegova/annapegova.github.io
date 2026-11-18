@@ -523,6 +523,7 @@ footer a:focus-visible{outline-color:#fff}
 .doc{margin:6px 0 26px;border-radius:24px;overflow:hidden;background:#fff;border:1px solid #e3eeea;box-shadow:0 10px 30px rgba(20,80,70,.07)}.doc-v{background:#0f2522}.doc-v video{display:block;width:100%;max-height:72svh;aspect-ratio:9/16;object-fit:cover;background:#0f2522}.doc-t{padding:18px 20px 20px}.doc-t small{display:block;font:600 11px/1 Roboto,system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#6f8f86;margin-bottom:8px}.doc-t h3{margin:0 0 10px;font:700 24px/1.15 'Noto Serif',Georgia,serif;color:#163d36}.doc-t p{margin:0 0 10px;color:#4b625d;line-height:1.6;font-size:15px}.doc-t p:last-child{margin:0}@media(min-width:760px){.doc{display:grid;grid-template-columns:300px 1fr;align-items:center}.doc-v video{max-height:none}}
 .det .dpic.trat.vid:not(.reel){height:clamp(320px,58svh,560px)!important}
 .det .dpic.trat.poster{height:auto!important;background:#fff!important}.det .dpic.trat.poster img{height:auto!important;width:100%!important;object-fit:contain!important;border-radius:24px}
+.frete{margin:12px 0 4px;padding:12px 14px 14px;border-radius:16px;background:#eef8f4;border:1px solid #cfe9df;display:flex;flex-direction:column;gap:4px;position:relative}.frete b{font-size:14px;color:#174a40}.frete span{font-size:13px;color:#4b625d}.frete strong{color:#1d6b5c}.frete i{display:block;height:6px;border-radius:6px;background:#d6ebe3;margin-top:8px;overflow:hidden;position:relative}.frete i:after{content:'';position:absolute;inset:0;width:var(--p);background:linear-gradient(90deg,#3aa18b,#1d6b5c);border-radius:6px;transition:width .4s}.frete.ok{background:#e4f6ec;border-color:#a9dcc4}.frete.ok b{color:#12704f}
 </style>
 </head>
 <body>
@@ -691,6 +692,12 @@ function updateCart(){
   if (document.getElementById('drawer').classList.contains('show')) drawer();
 }
 
+const ENTREGA_GRATIS = 400;
+function avisoEntrega(t){
+  if (t >= ENTREGA_GRATIS) return `<div class="frete ok"><b>🎉 Entrega grátis!</b><span>Seu pedido passou de ${brl(ENTREGA_GRATIS)}, não cobramos a entrega.</span><i style="--p:100%"></i></div>`;
+  const falta = ENTREGA_GRATIS - t, pc = Math.max(4, Math.round(t / ENTREGA_GRATIS * 100));
+  return `<div class="frete"><b>Entrega grátis acima de ${brl(ENTREGA_GRATIS)}</b><span>Faltam <strong>${brl(falta)}</strong> em produtos para não pagar a entrega.</span><i style="--p:${pc}%"></i></div>`;
+}
 function drawer(){
   const ids = Object.keys(cart);
   const db = document.getElementById('db');
@@ -713,6 +720,7 @@ function drawer(){
     <label>Unidade</label>
     <div class="seg">${DATA.lojas.map(l => `<button data-loja="${l.id}" class="${loja===l.id?'on':''}">${esc(l.nome)}</button>`).join('')}</div>
     ${prods.length ? `<label>Receber</label><div class="seg">${['Retirar na loja','Entrega'].map(o => `<button data-ent="${o}" class="${entrega===o?'on':''}">${o}</button>`).join('')}</div>` : ''}
+    ${prods.length && entrega === 'Entrega' ? avisoEntrega(t) : ''}
     <label for="nome">Seu nome</label><input id="nome" value="${esc(form.nome)}" placeholder="Como podemos te chamar?">
     <label for="obs">Observação</label><textarea id="obs" placeholder="Endereço para entrega, melhor horário, dúvidas…">${esc(form.obs)}</textarea>
   </div>`;
@@ -733,7 +741,7 @@ function link(){
   if (prods.length){
     lines.push(``, `*Produtos:*`);
     prods.forEach(id => { const p = items[id]; lines.push(`• ${cart[id]}x ${p.nome} — ${brl(p.preco * cart[id])}`); });
-    lines.push(`*Total:* ${brl(t)}`, `*Receber:* ${entrega}`);
+    lines.push(`*Total:* ${brl(t)}`, `*Receber:* ${entrega}${entrega === 'Entrega' && t >= ENTREGA_GRATIS ? ' (entrega grátis 🎉)' : ''}`);
   }
   if (trats.length){
     lines.push(``, `*Quero agendar:*`);
