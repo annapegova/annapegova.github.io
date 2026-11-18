@@ -728,7 +728,7 @@ function link(){
   if (!L){ a.classList.add('off'); hint.textContent = 'Escolha a unidade para enviar.'; return; }
   const prods = ids.filter(id => items[id].tipo === 'prod'), trats = ids.filter(id => items[id].tipo === 'trat');
   const { t } = totals();
-  const lines = [`Olá! Vim pelo catálogo Anna Pegova Curitiba 🌿`, ``, `*Unidade:* ${L.nome}`];
+  const lines = [`Olá! Vim pelo catálogo Anna Pegova Curitiba 💆🏻‍♀️`, ``, `*Unidade:* ${L.nome}`];
   if (form.nome.trim()) lines.push(`*Nome:* ${form.nome.trim()}`);
   if (prods.length){
     lines.push(``, `*Produtos:*`);
