@@ -981,6 +981,7 @@ function reelHTML(p){
     <a class="dreel-a" href="https://www.instagram.com/reel/${r}/" target="_blank" rel="noopener">Abrir no Instagram ›</a></div>`;
 }
 function openDet(id){
+  document.querySelectorAll('video').forEach(v => { try { v.pause(); } catch(e){} });
   const p = items[id]; detId = id;
   const tags = [];
   if (p.tipo === 'trat' && p.dur) tags.push(`<span>${esc(p.dur)}</span>`);
@@ -1004,7 +1005,7 @@ function openDet(id){
   document.getElementById('dov').classList.add('show');
   document.getElementById('dx').focus();
 }
-function closeDet(){ const vv = document.querySelector('#dpic video'); if (vv) vv.pause(); document.getElementById('dov').classList.remove('show'); detId = null; }
+function closeDet(){ const vv = document.querySelector('#dpic video'); if (vv) vv.pause(); const bx = document.getElementById('dpic'); if (bx && bx.classList.contains('vid')) bx.innerHTML = ''; document.getElementById('dov').classList.remove('show'); detId = null; }
 document.addEventListener('click', e => {
   if (e.target.closest('button')) {
     if (detId && e.target.closest('#det')) setTimeout(() => { const a = document.getElementById('dact'); if (a && detId) a.innerHTML = detCtrl(items[detId]); }, 0);
